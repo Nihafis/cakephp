@@ -29,7 +29,7 @@
                     <tr class="">
                         <td><?= $this->Number->format($example->id) ?></td>
                         <td>
-                            <a href="#" data-toggle="modal" data-target="#exampleModal"
+                            <a href="#" class="text-dark text-decoration-none" data-toggle="modal" data-target="#exampleModal"
                                 data-detail="<?= h($example->detail) ?>"
                                 data-name="<?= h($example->name) ?>">
                                 <?= h($example->name) ?>
