@@ -51,7 +51,7 @@
                         </td>
                         <td>
                             <?php if ($example->stock > 0) {
-                                $class = 'btn btn-success';
+                                $class = 'btn btn-primary';
                                 $btn_text = 'Add to cart';
                                 // $btn_text = 'Add to cart';
                             } else {
@@ -92,53 +92,55 @@ $cart = $this->request->getSession()->read('Cart');
 if (!empty($cart)) : ?>
     <div class="examples index content">
         <h4>Cart Summary</h4>
-        <table class="text-center table">
-            <thead>
-                <tr class="table-active">
-                    <th>Product</th>
-                    <th>Quantity</th>
-                    <th>Product Price</th>
-                    <th>Option</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php $total_price = $total_quantity = 0; ?>
-                <?php
+        <div class="table-responsive">
+            <table class="text-center table">
+                <thead>
+                    <tr class="table-active">
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Product Price</th>
+                        <th>Option</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php $total_price = $total_quantity = 0; ?>
+                    <?php
 
-                foreach ($cart as $item): ?>
+                    foreach ($cart as $item): ?>
+                        <tr>
+                            <td><?= h($item['name']) ?></td>
+                            <td><?= h($item['quantity']) ?></td>
+                            <td><?= h($item['price'] * $item['quantity']) ?></td>
+                            <td>
+                                <?= $this->Form->postLink(
+                                    __('Remove'),
+                                    ['action' => 'removeFromCart', $item['id']],
+                                    ['class' => 'btn btn-danger', 'confirm' => __('Remove {0} from cart?', $item['name'])]
+                                );
+                                ?>
+                            </td>
+                        </tr>
+                        <?php $total_quantity +=  $item['quantity']; ?>
+                        <?php $total_price += $item['price'] * $item['quantity']; ?>
+                    <?php endforeach; ?>
+                </tbody>
+                <tfoot class="flex  align-items-center">
                     <tr>
-                        <td><?= h($item['name']) ?></td>
-                        <td><?= h($item['quantity']) ?></td>
-                        <td><?= h($item['price'] * $item['quantity']) ?></td>
-                        <td>
+                        <th colspan="1">Total</th>
+                        <th><?= h($total_quantity) ?></th>
+                        <th><?= h($total_price) ?></th>
+                        <th>
                             <?= $this->Form->postLink(
-                                __('Remove'),
-                                ['action' => 'removeFromCart', $item['id']],
-                                ['class' => 'btn btn-danger', 'confirm' => __('Remove {0} from cart?', $item['name'])]
+                                __('Purchase'),
+                                ['action' => 'purchase', '?' => ['cart' => json_encode($cart)]],
+                                ['class' => 'btn btn-primary font-weight-bolder', 'confirm' => __('Confirm Order?')]
                             );
                             ?>
-                        </td>
+                        </th>
                     </tr>
-                    <?php $total_quantity +=  $item['quantity']; ?>
-                    <?php $total_price += $item['price'] * $item['quantity']; ?>
-                <?php endforeach; ?>
-            </tbody>
-            <tfoot class="flex  align-items-center">
-                <tr>
-                    <th  colspan="1">Total</th>
-                    <th><?= h($total_quantity) ?></th>
-                    <th><?= h($total_price) ?></th>
-                    <th>
-                        <?= $this->Form->postLink(
-                            __('Purchase'),
-                            ['action' => 'purchase', '?' => ['cart' => json_encode($cart)]],
-                            ['class' => 'btn btn-success font-weight-bolder', 'confirm' => __('Confirm Order?')]
-                        );
-                        ?>
-                    </th>
-                </tr>
-            </tfoot>
-        </table>
+                </tfoot>
+            </table>
+        </div>
     </div>
 <?php endif; ?>
 
